@@ -1,0 +1,10 @@
+users:
+
+ - user: x 
+   key: 'key'
+
+ - user: y
+   key: 'key'
+
+ - user: z
+   key: 'key'  

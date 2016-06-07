@@ -1,0 +1,33 @@
+---
+- hosts: host1
+  remote_user: nermine
+  become: yes
+  become_user: root
+
+
+ 
+  tasks:
+
+   - include_vars: /home/nermine/users.yml
+    # Walk through account creation, modification, and deletion
+   - name: test basic user account creation
+     user: 
+       name: "{{ item.user }}"
+       home: /home/"{{ item.user }}" 
+       shell: /bin/bash
+       state: present 
+     with_items: "{{ users }}"
+
+   - name: add public key of user mina to authorized_key
+     authorized_key: 
+       user: "{{ item.user }}"
+       key: "{{ item.key }}"
+     with_items: "{{ users }}"
+
+
+   - name: add user mina to sudoers file 
+     lineinfile: 
+       dest: /etc/sudoers  
+       line: '{{ item.user }} ALL=(ALL) NOPASSWD:ALL' 
+       validate: 'visudo -cf %s'       
+     with_items: "{{ users }}"
